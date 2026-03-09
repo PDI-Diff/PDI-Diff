@@ -1,28 +1,20 @@
-PDI-Diff: Physically Decoupled Interactive Diffusion for Low-Light Image Enhancement
-This repository contains the official PyTorch implementation of the paper: Breaking Channel Coupling: Physically Decoupled Interactive Diffusion for Low-Light Enhancement.
+# PDI-Diff: Physically Decoupled Interactive Diffusion for Low-Light Image Enhancement
 
-Observation and Motivation
-Low-light image enhancement (LLIE) is challenging due to the complex entanglement of illumination degradation, heavy photon noise, and irregular color shifts. While deterministic architectures achieve success in recovering global visibility, they often produce over-smoothed textures in extreme dark regions.
+## 📖 Overview
 
-Generative models, specifically Denoising Diffusion Probabilistic Models (DDPMs), provide a solution by synthesizing high-frequency details. However, current diffusion methods typically operate in the coupled RGB space, which leads to unpredictable color deviations. Although the HVI color space offers an effective operational manifold for decoupling, existing HVI-based regression models lack the stochastic capacity to restore photorealistic textures. PDI-Diff bridges this gap by executing parallel reverse diffusion processes within the HVI manifold to ensure both physical consistency and perceptual fidelity.
+Low-light image enhancement (LLIE) remains a formidable challenge in computer vision due to the complex entanglement of severe illumination degradation, photon noise, and non-linear chromatic distortion. While recent generative diffusion models excel at synthesizing high-frequency textures, deploying them directly in the tightly coupled RGB color space often leads to uncontrolled color deviations and the hallucination of non-existent structural artifacts.
 
-Technical Features
-PDI-Diff focuses on a dual-stream diffusion strategy to handle illumination and chromaticity independently:
+To fundamentally overcome these bottlenecks, we introduce **PDI-Diff**, a novel, physically-inspired generative framework that synergistically bridges explicit physical priors with latent diffusion techniques. 
 
-Parallel Convolutional Coarse Module (PCCM):
+Instead of relying on the standard RGB format, our method leverages the **HVI color space** to explicitly decouple the degraded input into distinct **Intensity** and **Chromaticity** representations. This allows the network to model structural illumination and color fidelity independently yet synchronously.
 
-Uses Structure-Aware Dense Blocks (SADB) to capture global geometric anchors via dilated convolutions.
+## ✨ Key Features & Architecture
 
-Employs Chromaticity Preservation Blocks (CPB) to establish reliable color anchors through instance normalization.
+Our framework is driven by three core architectural innovations:
 
-Physically Decoupled Interactive Diffusion (PDID):
-
-Executes two parallel reverse diffusion branches to synthesize high-frequency textures for intensity and color independently.
-
-Prevents cross-channel interference inherent in standard RGB-based diffusion processes.
-
-Interaction Factor (IF):
-
-A dynamic gating mechanism that propagates structural boundary cues from the intensity branch to the chromaticity branch.
-
-Ensures spatial alignment and prevents color bleeding throughout the stochastic generation process.
+*   **🧱 Parallel Convolutional Coarse Module (PCCM):** 
+    Acts as the deterministic foundation of our pipeline. It extracts robust physical anchors from the degraded image, providing a highly stable structural prior that prevents the subsequent diffusion process from generating arbitrary or unconstrained artifacts.
+*   **🌌 Physically Decoupled Interactive Diffusion (PDID):** 
+    A specialized dual-stream generative diffusion module tailored for the decoupled HVI space. It performs fine-grained stochastic refinement, restoring realistic textures for intensity and vibrant colors for chromaticity without cross-channel interference.
+*   **🔗 Interaction Factor (IF):** 
+    A dynamic gating mechanism designed to bridge the semantic gap between the two diffusion streams. By feeding spatial boundary cues from the intensity stream into the chromaticity branch, it explicitly averts spatial misalignment and color bleeding.
